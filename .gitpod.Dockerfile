@@ -5,6 +5,8 @@ USER gitpod
 # SSH Server
 # -------------------------------------------------------------------------------------------------
 
+USER root
+
 # Install Dropbear SSH server
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq \
         dropbear \
@@ -12,6 +14,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq \
 
 # Install Chisel
 RUN curl https://i.jpillora.com/chisel! | bash
+
+USER gitpod
 
 # Application dependencies
 # -------------------------------------------------------------------------------------------------
