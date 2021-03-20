@@ -7,6 +7,9 @@ USER gitpod
 
 USER root
 
+# Update
+RUN apt-get update -yq
+
 # Install Dropbear SSH server
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq \
         dropbear \
