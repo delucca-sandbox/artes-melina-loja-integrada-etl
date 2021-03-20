@@ -11,8 +11,7 @@ lojaintegrada_api = build_lojaintegrada_api()
 def main():
   extracted_data = extract_data()
   transformed_data = transform_data(extracted_data)
-
-  print(transformed_data)
+  load_data(transformed_data)
 
 def extract_data():
   lojaintegrada_orders = get_lojaintegrada_orders()
@@ -82,6 +81,10 @@ def build_products_availability(order):
 
 def build_single_product_availability(order_product):
   return str(order_product['disponibilidade'])
+
+def load_data(data):
+  # https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html
+  print(data)
 
 if __name__ == '__main__':
   main()
