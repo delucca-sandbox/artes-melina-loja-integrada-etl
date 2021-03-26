@@ -8,6 +8,7 @@ A data deve estar formata assim:
 `AAAA-MM-DD`
 
 Sendo:
+
 `A`: Caracter de ano (4 dígitos)
 `M`: Caracter de mês (2 dígitos, com 0 a esquerda se for menor que 10)
 `D`: Caracter de dia (2 dígitos, com 0 a esquerda se for menor que 10)
