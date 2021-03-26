@@ -1,7 +1,6 @@
 from lojaintegrada import Api
 from os import environ
 from sys import argv
-from oauth2client.service_account import ServiceAccountCredentials
 import gspread
 import pprint
 
@@ -13,10 +12,11 @@ lojaintegrada_api = build_lojaintegrada_api()
 def main():
   extracted_data = extract_data()
   transformed_data = transform_data(extracted_data)
-  google_credentials = build_google_credentials()
-  google_sheet = build_google_client(google_credentials)
 
-  load_data(transformed_data, google_sheet)
+  google_sheet = get_google_sheet()
+  previous_data = get_previous_data(google_sheet)
+
+  load_data(transformed_data, previous_data, google_sheet)
 
 def extract_data():
   lojaintegrada_orders = get_lojaintegrada_orders()
@@ -37,13 +37,13 @@ def transform_data(raw_data):
 
 def transform_single_order(order):
   transformed_order = {
-    'order_no': build_order_no(order),
-    'client_name': build_client_name(order),
-    'delivery_method': build_delivery_method(order),
-    'deadline': build_deadline(order),
-    'client_comment': build_client_comment(order),
-    'products': build_products(order),
-    'products_availability': build_products_availability(order)
+    'Numero do pedido': build_order_no(order),
+    'Nome do cliente': build_client_name(order),
+    'Forma de envio do pedido': build_delivery_method(order),
+    'Prazo de postagem': build_deadline(order),
+    'Observações do cliente': build_client_comment(order),
+    'Produtos': build_products(order),
+    'Disponibilidade': build_products_availability(order)
   }
 
   return transformed_order
@@ -87,16 +87,43 @@ def build_products_availability(order):
 def build_single_product_availability(order_product):
   return str(order_product['disponibilidade'])
 
-def build_google_credentials():
-  print('ok')
+def get_google_sheet():
+  account = gspread.service_account(filename='google-credential.json')
+  sheet = account.open_by_url('https://docs.google.com/spreadsheets/d/1VGcYWX9AugzoLCBVSWxkt3PkMwEiOMlAf_h75SZIcPk/edit#gid=1306728795').sheet1
 
-def build_google_client(credentials):
-  print(credentials)
+  return sheet
 
-def load_data(data, sheet):
-  # https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html
-  print(data)
-  print(sheet)
+def get_previous_data(sheet):
+  previous_data = sheet.get_all_records()
+
+  return previous_data
+
+def load_data(data, previous_data, sheet):
+  filtered_data = filter_new_data(data, previous_data)
+  if filtered_data: append_rows(filtered_data, sheet)
+
+def filter_new_data(data, previous_data):
+  previous_order_ids = [i['Numero do pedido'] for i in previous_data]
+  uniq_data = [line for line in data if line['Numero do pedido'] not in previous_order_ids]
+
+  return uniq_data
+
+def append_rows(data, sheet):
+  for row in data:
+    append_single_row(row, sheet)
+
+def append_single_row(row, sheet):
+  marshaled_row = [
+    row['Numero do pedido'],
+    row['Nome do cliente'],
+    row['Forma de envio do pedido'],
+    row['Prazo de postagem'],
+    row['Observações do cliente'],
+    row['Produtos'],
+    row['Disponibilidade'],
+   ]
+
+  sheet.append_row(marshaled_row)
 
 if __name__ == '__main__':
   main()

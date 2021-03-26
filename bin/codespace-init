@@ -65,7 +65,7 @@ function install_loja_integrada_api {
 function install_google_sheets_dependencies {
   log "Installing Google Sheets Dependencies" "Install dependencies"
 
-  pip install gspread oauth2client
+  pip install gspread
 }
 
 # Helpers
