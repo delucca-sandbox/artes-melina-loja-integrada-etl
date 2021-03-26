@@ -4,21 +4,23 @@ from sys import argv
 import gspread
 import pprint
 
-def build_lojaintegrada_api(api_key=environ['LOJA_INTEGRADA_API_KEY'], app_key=environ['LOJA_INTEGRADA_APP_KEY']):
-  return Api(api_key, app_key)
-
-lojaintegrada_api = build_lojaintegrada_api()
+# Entrypoint
+# -------------------------------------------------------------------------------------------------
 
 def main():
-  extracted_data = extract_data()
-  transformed_data = transform_data(extracted_data)
+  extracted_data = extract()
+  transformed_data = transform(extracted_data)
 
-  google_sheet = get_google_sheet()
-  previous_data = get_previous_data(google_sheet)
+  load(transformed_data)
 
-  load_data(transformed_data, previous_data, google_sheet)
+  print('')
+  print('Dados carregados com sucesso!')
 
-def extract_data():
+# Extract
+# -------------------------------------------------------------------------------------------------
+
+def extract():
+  print('➤ Extraindo dados da Loja Integrada...')
   lojaintegrada_orders = get_lojaintegrada_orders()
 
   return lojaintegrada_orders
@@ -30,7 +32,11 @@ def get_lojaintegrada_orders():
 
   return orders
 
-def transform_data(raw_data):
+# Transform
+# -------------------------------------------------------------------------------------------------
+
+def transform(raw_data):
+  print('➤ Transformando dados para o formato desejado...')
   transformed_data = [transform_single_order(order) for order in raw_data]
 
   return transformed_data
@@ -87,6 +93,17 @@ def build_products_availability(order):
 def build_single_product_availability(order_product):
   return str(order_product['disponibilidade'])
 
+# Load
+# -------------------------------------------------------------------------------------------------
+
+def load(data):
+  print('➤ Carregando dados no Google Sheets...')
+  sheet = get_google_sheet()
+  previous_data = get_previous_data(sheet)
+
+  filtered_data = filter_new_data(data, previous_data)
+  if filtered_data: append_rows(filtered_data, sheet)
+
 def get_google_sheet():
   account = gspread.service_account(filename='google-credential.json')
   sheet = account.open_by_url('https://docs.google.com/spreadsheets/d/1VGcYWX9AugzoLCBVSWxkt3PkMwEiOMlAf_h75SZIcPk/edit#gid=1306728795').sheet1
@@ -97,10 +114,6 @@ def get_previous_data(sheet):
   previous_data = sheet.get_all_records()
 
   return previous_data
-
-def load_data(data, previous_data, sheet):
-  filtered_data = filter_new_data(data, previous_data)
-  if filtered_data: append_rows(filtered_data, sheet)
 
 def filter_new_data(data, previous_data):
   previous_order_ids = [i['Numero do pedido'] for i in previous_data]
@@ -124,6 +137,17 @@ def append_single_row(row, sheet):
    ]
 
   sheet.append_row(marshaled_row)
+
+# Helpers
+# -------------------------------------------------------------------------------------------------
+
+def build_lojaintegrada_api(api_key=environ['LOJA_INTEGRADA_API_KEY'], app_key=environ['LOJA_INTEGRADA_APP_KEY']):
+  return Api(api_key, app_key)
+
+lojaintegrada_api = build_lojaintegrada_api()
+
+# Execute
+# -------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
   main()
