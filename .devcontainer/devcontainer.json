@@ -1,4 +1,5 @@
 {
   "image": "mcr.microsoft.com/vscode/devcontainers/python:3",
-  "postCreateCommand": "bin/codespace-init"
+  "postCreateCommand": "bin/codespace-init",
+  "runArgs": ["--env-file", ".env"]
 }

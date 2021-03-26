@@ -53,12 +53,19 @@ function validate_nvm_dependency {
 
 function install_dependencies {
   install_loja_integrada_api
+  install_google_sheets_dependencies
 }
 
 function install_loja_integrada_api {
   log "Installing Loja Integrada API" "Install dependencies"
 
   pip install git+https://git@github.com/tcosta84/python-lojaintegrada.git
+}
+
+function install_google_sheets_dependencies {
+  log "Installing Google Sheets Dependencies" "Install dependencies"
+
+  pip install gspread oauth2client
 }
 
 # Helpers

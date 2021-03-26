@@ -1,6 +1,8 @@
 from lojaintegrada import Api
 from os import environ
 from sys import argv
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
 import pprint
 
 def build_lojaintegrada_api(api_key=environ['LOJA_INTEGRADA_API_KEY'], app_key=environ['LOJA_INTEGRADA_APP_KEY']):
@@ -11,7 +13,10 @@ lojaintegrada_api = build_lojaintegrada_api()
 def main():
   extracted_data = extract_data()
   transformed_data = transform_data(extracted_data)
-  load_data(transformed_data)
+  google_credentials = build_google_credentials()
+  google_sheet = build_google_client(google_credentials)
+
+  load_data(transformed_data, google_sheet)
 
 def extract_data():
   lojaintegrada_orders = get_lojaintegrada_orders()
@@ -82,9 +87,16 @@ def build_products_availability(order):
 def build_single_product_availability(order_product):
   return str(order_product['disponibilidade'])
 
-def load_data(data):
+def build_google_credentials():
+  print('ok')
+
+def build_google_client(credentials):
+  print(credentials)
+
+def load_data(data, sheet):
   # https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html
   print(data)
+  print(sheet)
 
 if __name__ == '__main__':
   main()
