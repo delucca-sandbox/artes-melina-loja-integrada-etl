@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+# DEPENDENCIES
+# -------------------------------------------------------------------------------------------------
+# - bash 4
+# - pip 21
+
+# Global flags
+# -------------------------------------------------------------------------------------------------
+set +m
+
+# Global variables
+# -------------------------------------------------------------------------------------------------
+
+ROOT_DIR=$(git rev-parse --show-toplevel)
+
+# Entrypoint
+# -------------------------------------------------------------------------------------------------
+
+function main {
+  validate_requirements
+  install_dependencies
+}
+
+# Validate requirements
+# -------------------------------------------------------------------------------------------------
+
+function validate_requirements {
+  validate_bash_dependency
+  validate_nvm_dependency
+}
+
+function validate_bash_dependency {
+  major_version="$(bash --version | head -1 | cut -d ' ' -f 4 | cut -d '.' -f 1)"
+  min_major_version="4"
+
+  if [ "${major_version}" -lt "${min_major_version}" ]; then
+    throw_error "Your bash major version must be ${min_major_version} or greater"
+  fi
+}
+
+function validate_nvm_dependency {
+  major_version="$(pip --version | head -1 | cut -d ' ' -f 2 | cut -d '.' -f 1)"
+  min_major="21"
+
+  if [ "${major_version}" -lt "${min_major_version}" ]; then
+    throw_error "Your pip major version must be ${min_major_version} or greater"
+  fi
+}
+
+# Install dependencies
+# -------------------------------------------------------------------------------------------------
+
+function install_dependencies {
+  install_loja_integrada_api
+}
+
+function install_loja_integrada_api {
+  log "Installing Loja Integrada API" "Install dependencies"
+
+  pip install git+https://git@github.com/tcosta84/python-lojaintegrada.git
+}
+
+# Helpers
+# -------------------------------------------------------------------------------------------------
+
+function log {
+  message=$1
+  category=${2:-Waiting}
+
+  bold=$(tput bold)
+  reset=$(tput sgr0)
+  cyan=$(tput setaf 6)
+
+  echo
+  echo "${bold}${cyan}➤ ${category}:${reset} ${message}"
+}
+
+function throw_error {
+  message=$1
+
+  bold=$(tput bold)
+  reset=$(tput sgr0)
+  red=$(tput setaf 1)
+
+  echo "${bold}${red}Error:${reset}"
+  echo "${red}  ${message}${reset}"
+  exit 1
+}
+
+# Execute
+# -------------------------------------------------------------------------------------------------
+
+main
