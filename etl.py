@@ -20,7 +20,7 @@ def main():
 # -------------------------------------------------------------------------------------------------
 
 def extract():
-  print('➤ Extraindo dados da Loja Integrada...')
+  print('> Extraindo dados da Loja Integrada...')
   lojaintegrada_orders = get_lojaintegrada_orders()
 
   return lojaintegrada_orders
@@ -36,7 +36,7 @@ def get_lojaintegrada_orders():
 # -------------------------------------------------------------------------------------------------
 
 def transform(raw_data):
-  print('➤ Transformando dados para o formato desejado...')
+  print('> Transformando dados para o formato desejado...')
   transformed_data = [transform_single_order(order) for order in raw_data]
 
   return transformed_data
@@ -97,7 +97,7 @@ def build_single_product_availability(order_product):
 # -------------------------------------------------------------------------------------------------
 
 def load(data):
-  print('➤ Carregando dados no Google Sheets...')
+  print('> Carregando dados no Google Sheets...')
   sheet = get_google_sheet()
   previous_data = get_previous_data(sheet)
 
