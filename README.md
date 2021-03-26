@@ -1,8 +1,9 @@
 # Runbook ETL Artes Melina
 
+> **IMPORTANTE:** Pra colar no terminal você precisa usar `Shift+Insert`
 1. `SUPER+R` > `"C:\Program Files\Git\git-bash.exe" --cd-to-home` > `Enter`
 2. `cd "Google Drive/Trabalho/Artes Melina Ateliê/ETL"`
-3. `py etl.py <<INSIRA AQUI A DATA>>`
+4. `py etl.py <<INSIRA AQUI A DATA>>`
 
 A data deve estar formata assim:
 * `AAAA-MM-DD`
