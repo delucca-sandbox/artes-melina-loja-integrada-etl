@@ -27,7 +27,7 @@ function main {
 
 function validate_requirements {
   validate_bash_dependency
-  validate_nvm_dependency
+  validate_pip_dependency
 }
 
 function validate_bash_dependency {
@@ -39,7 +39,7 @@ function validate_bash_dependency {
   fi
 }
 
-function validate_nvm_dependency {
+function validate_pip_dependency {
   major_version="$(pip --version | head -1 | cut -d ' ' -f 2 | cut -d '.' -f 1)"
   min_major="21"
 
