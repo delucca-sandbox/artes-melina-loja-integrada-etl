@@ -63,7 +63,7 @@ def build_client_name(order):
 def build_delivery_method(order):
   primary_method = order['envios'][0]
 
-  return primary_method['forma_envio']['nome']
+  return '{} - {}'.format(primary_method['forma_envio']['nome'], primary_method['format_envio']['tipo'])
 
 def build_deadline(order):
   slowest_availability = min([item['disponibilidade'] for item in order['itens']])
