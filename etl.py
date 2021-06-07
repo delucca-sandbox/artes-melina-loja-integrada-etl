@@ -1,6 +1,6 @@
 from lojaintegrada import Api
 from os import environ
-from sys import argv
+from sys import argv, exit
 import gspread
 import pprint
 
@@ -62,8 +62,8 @@ def build_client_name(order):
 
 def build_delivery_method(order):
   primary_method = order['envios'][0]
-  
-  return primary_method['forma_envio']['tipo']
+
+  return primary_method['forma_envio']['nome']
 
 def build_deadline(order):
   slowest_availability = min([item['disponibilidade'] for item in order['itens']])
@@ -79,11 +79,11 @@ def build_products(order):
   return ',\n'.join(products)
 
 def build_single_product(order_product):
-  id = order_product['produto'].split('/')[-1]
-  product = lojaintegrada_api.get_product(id)
   quantity = int(float(order_product['quantidade']))
+  normalized_sku = ' '.join(order_product['sku'].split('-')[1:])
+  name = '{} - {}'.format(order_product['nome'], normalized_sku)
 
-  return '{} {}'.format(quantity, product['nome'])
+  return '{} {}'.format(quantity, name)
 
 def build_products_availability(order):
   products_availability = [build_single_product_availability(order_product) for order_product in order['itens']]

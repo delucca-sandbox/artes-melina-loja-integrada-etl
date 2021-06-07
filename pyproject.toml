@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "artes-melina-loja-integrada-etl"
+version = "0.1.0"
+description = ""
+authors = ["delucca <delucca@pm.me>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+gspread = "^3.7.0"
+lojaintegrada = {git = "https://git@github.com/tcosta84/python-lojaintegrada.git"}
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
